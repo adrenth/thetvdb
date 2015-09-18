@@ -4,6 +4,9 @@ namespace Adrenth\Thetvdb;
 
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\Handler\MirrorResponseHandler;
+use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
+use Adrenth\Thetvdb\Response\MirrorResponse;
+use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Doctrine\Common\Cache\Cache;
 use GuzzleHttp\Client as HttpClient;
 
@@ -75,38 +78,33 @@ class Client implements ClientInterface
                 'base_uri' => self::API_BASE_URI
             ]
         );
-
-        $this->initialDatabaseProcessing();
     }
 
     /**
-     * Step 1: Get a list of mirrors
-     *
-     * a. Retrieve http://thetvdb.com/api/<apikey>/mirrors.xml.
-     * b. Create 3 arrays called xmlmirrors, bannermirrors, and zipmirrors.
-     * c. Separate the mirrors using the typemask field, as documented for mirrors.xml.
-     * d. Select a random mirror from each array (denoted as <mirrorpath_xml>, <mirrorpath_banners>, and
-     *    <mirrorpath_zip> for rest of example.
-     *
+     * @return MirrorResponse
      * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     * @deprecated This is deprecated. It will return one mirror. Thetvdb.com staff handles it on their side.
      */
-    protected function initialDatabaseProcessing()
+    public function getMirrors()
     {
-        //$mirrors = $this->getMirrors();
-        //var_dump($mirrors);
+        $xml = $this->performApiCallWithCachedXmlResponse('/api/' . $this->apiKey . '/mirrors.xml', true);
+        $handler = new MirrorResponseHandler($xml);
+        return $handler->handle();
     }
 
     /**
-     * @return Mirror[]
+     * Get Server Time (last Updated)
+     *
+     * @return ServerTimeResponse
      * @throws \RuntimeException
      * @throws InvalidXmlInResponseException
      */
-    protected function getMirrors()
+    public function getServerTime()
     {
-        $xml = $this->performApiCallWithXmlResponse('/api/' . $this->apiKey . '/mirrors.xml', true);
-        $handler = new MirrorResponseHandler($xml);
-        $response = $handler->handle();
-        return $response->getMirrors();
+        $xml = $this->performApiCallWithXmlResponse('/api/Updates.php?type=none');
+        $handler = new ServerTimeResponseHandler($xml);
+        return $handler->handle();
     }
 
     /**
@@ -124,12 +122,37 @@ class Client implements ClientInterface
     /**
      * Perform an API call
      *
-     * @param string $path         API path (use constants e.g. Client::API_PATH_*)
+     * @param $path
+     * @return string
+     * @throws \RuntimeException
+     */
+    protected function performApiCallWithXmlResponse($path)
+    {
+        $response = $this->httpClient->get($path);
+
+        if ($response->getStatusCode() === 200) {
+            $xml = $response->getBody()->getContents();
+            return $xml;
+        }
+
+        throw new \RuntimeException(
+            sprintf(
+                'Got status code %d from service at path %s',
+                $response->getStatusCode(),
+                $path
+            )
+        );
+    }
+
+    /**
+     * Perform an API call (cached)
+     *
+     * @param string $path
      * @param bool   $cacheForever Cache response forever (on success)
      * @return string
      * @throws \RuntimeException
      */
-    protected function performApiCallWithXmlResponse($path, $cacheForever = false)
+    protected function performApiCallWithCachedXmlResponse($path, $cacheForever = false)
     {
         $cacheKey = md5($path);
 
