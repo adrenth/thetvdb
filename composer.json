@@ -1,0 +1,34 @@
+{
+    "name": "adrenth/thetvdb",
+    "description": "API Client for thetvdb.com",
+    "type": "library",
+    "keywords": ["thetvdb", "thetvdb.com", "api", "library"],
+    "license": "MIT",
+    "homepage": "http://github.com/adrenth/thetvdb",
+    "authors": [
+        {
+            "name": "Alwin Drenth",
+            "email": "adrenth@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.0",
+        "doctrine/cache": "^1.4",
+        "symfony/serializer": "^2.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-0": {
+            "Adrenth\\Thetvdb\\": "lib/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1-dev"
+        }
+    }
+}
