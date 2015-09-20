@@ -7,10 +7,12 @@ use Adrenth\Thetvdb\Response\Handler\MirrorResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
+use Adrenth\Thetvdb\Response\Handler\UserRatingResponseHandler;
 use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Adrenth\Thetvdb\Response\UserFavoritesResponse;
 use Adrenth\Thetvdb\Response\UserPreferredLanguageResponse;
+use Adrenth\Thetvdb\Response\UserRatingResponse;
 use Doctrine\Common\Cache\Cache;
 use GuzzleHttp\Client as HttpClient;
 
@@ -29,6 +31,7 @@ class Client implements ClientInterface
     const API_PATH_SERVER_TIME = '/api/Updates.php';
     const API_PATH_USER_LANGUAGE = '/api/User_PreferredLanguage.php';
     const API_PATH_USER_FAVORITES = '/api/User_Favorites.php';
+    const API_PATH_USER_RATING = '/api/User_Rating.php';
 
     /**
      * HTTP Client
@@ -164,6 +167,9 @@ class Client implements ClientInterface
     /**
      * Get User Favorites
      *
+     * Caution: This method returns a cached response from Server. If you need the actual list of favorites
+     * after adding or removing series to favorites use that response instead.
+     *
      * @param string $accountId Account Identifier
      * @return UserFavoritesResponse
      * @throws \RuntimeException
@@ -228,27 +234,109 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
-    /*
+    /**
+     * Add User Rating for Episode with given Episode Identifier
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $episodeId Episode Identifier
+     * @param int    $rating    Rating 1 - 10
+     * @return UserRatingResponse
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @throws InvalidXmlInResponseException
+     */
     public function addUserRatingForEpisode($accountId, $episodeId, $rating)
     {
-        // rating 1 - 10 (not 0)
+        $rating = (int)$rating;
+
+        if (!($rating >= 1 && $rating <= 10)) {
+            throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
+        }
+
+        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, $rating);
+
+        $handler = new UserRatingResponseHandler($xml);
+        return $handler->handle();
     }
 
+    /**
+     * Add User Rating for Series with given Series Identifier
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $seriesId  Series Identifier
+     * @param int    $rating    Rating 1 - 10
+     * @return UserRatingResponse
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     * @throws InvalidXmlInResponseException
+     */
     public function addUserRatingForSeries($accountId, $seriesId, $rating)
     {
-        // rating 1 - 10 (not 0)
+        $rating = (int)$rating;
+
+        if (!($rating >= 1 && $rating <= 10)) {
+            throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
+        }
+
+        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, $rating);
+
+        $handler = new UserRatingResponseHandler($xml);
+        return $handler->handle();
     }
 
+    /**
+     * Remove User Rating for Episode with given Episode Identifier
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $episodeId Episode Identifier
+     * @return UserRatingResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
     public function removeUserRatingForEpisode($accountId, $episodeId)
     {
-        // rating = 0
+        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, 0);
+        $handler = new UserRatingResponseHandler($xml);
+        return $handler->handle();
     }
 
+    /**
+     * Remove User Rating for Series with given Series Identifier
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $seriesId  Series Identifier
+     * @return UserRatingResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
     public function removeUserRatingForSeries($accountId, $seriesId)
     {
-        // rating = 0
+        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, 0);
+        $handler = new UserRatingResponseHandler($xml);
+        return $handler->handle();
     }
-    */
+
+    /**
+     * Perform User Rating
+     *
+     * @param string $accountId Account Identifier
+     * @param string $itemType  Enum Value 'series' or 'episode'
+     * @param int    $itemId    Series Identifier of Episode Identifier
+     * @param int    $rating    Rating 0 - 10
+     * @return string
+     * @throws \RuntimeException
+     */
+    private function performUserRating($accountId, $itemType, $itemId, $rating)
+    {
+        return $this->performApiCallWithXmlResponse(static::API_PATH_USER_RATING, [
+            'query' => [
+                'accountid' => $accountId,
+                'itemtype' => $itemType,
+                'itemid' => $itemId,
+                'rating' => $rating
+            ]
+        ]);
+    }
 
     /**
      * Set cacheTtl
