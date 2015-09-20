@@ -92,19 +92,6 @@ class Client implements ClientInterface
     }
 
     /**
-     * @return MirrorResponse
-     * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
-     * @deprecated This is deprecated. It will return one mirror. Thetvdb.com staff handles it on their side.
-     */
-    public function getMirrors()
-    {
-        $xml = $this->performApiCallWithCachedXmlResponse('/api/' . $this->apiKey . '/mirrors.xml', [], true);
-        $handler = new MirrorResponseHandler($xml);
-        return $handler->handle();
-    }
-
-    /**
      * Get Server Time (last Updated)
      *
      * @return ServerTimeResponse
