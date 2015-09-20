@@ -5,6 +5,7 @@ namespace Adrenth\Thetvdb;
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\Handler\MirrorResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
+use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Doctrine\Common\Cache\Cache;
@@ -13,7 +14,7 @@ use GuzzleHttp\Client as HttpClient;
 /**
  * Class Client
  *
- * @category Tvrage
+ * @category Thetvdb
  * @package  Adrenth\Thetvdb
  * @author   Alwin Drenth <adrenth@gmail.com>
  * @license  http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -57,6 +58,7 @@ class Client implements ClientInterface
      *
      * @param string $apiKey
      * @param Cache  $cache
+     * @throws \RuntimeException
      */
     public function __construct(Cache $cache, $apiKey)
     {
@@ -88,7 +90,7 @@ class Client implements ClientInterface
      */
     public function getMirrors()
     {
-        $xml = $this->performApiCallWithCachedXmlResponse('/api/' . $this->apiKey . '/mirrors.xml', true);
+        $xml = $this->performApiCallWithCachedXmlResponse('/api/' . $this->apiKey . '/mirrors.xml', [], true);
         $handler = new MirrorResponseHandler($xml);
         return $handler->handle();
     }
@@ -107,6 +109,86 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
+    /*
+    public function getSeries($name, Language $language = null)
+    {
+
+    }
+
+    public function getSeriesByRemoteId($imdbId, $zap2itId, Language $language = null)
+    {
+
+    }
+
+    public function getEpisodeByAirDate($seriesId, \DateTime $airDate, Language $language = null)
+    {
+        // apikey
+    }
+
+    public function getRatingsForUser($accountId, $seriesId = null)
+    {
+        // apikey
+    }
+    */
+
+    /**
+     * @param string $accountId
+     * @return Language
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function getUserPreferredLanguage($accountId)
+    {
+        $xml = $this->performApiCallWithCachedXmlResponse('/api/User_PreferredLanguage.php', [
+            'query' => [
+                'accountid' => $accountId
+            ]
+        ]);
+
+        $handler = new UserPreferredLanguageResponseHandler($xml);
+        $response = $handler->handle();
+
+        return $response->getLanguage();
+    }
+
+    /*
+    public function getUserFavorites($accountId)
+    {
+        // type = empty
+
+    }
+
+    public function addUserFavorite($accountId, $seriesId)
+    {
+        // type = add
+    }
+
+    public function removeUserFavorite($accountId, $seriesId)
+    {
+        // type = remove
+    }
+
+    public function addUserRatingForEpisode($accountId, $episodeId, $rating)
+    {
+        // rating 1 - 10 (not 0)
+    }
+
+    public function addUserRatingForSeries($accountId, $seriesId, $rating)
+    {
+        // rating 1 - 10 (not 0)
+    }
+
+    public function removeUserRatingForEpisode($accountId, $episodeId)
+    {
+        // rating = 0
+    }
+
+    public function removeUserRatingForSeries($accountId, $seriesId)
+    {
+        // rating = 0
+    }
+    */
+
     /**
      * Set cacheTtl
      *
@@ -122,11 +204,12 @@ class Client implements ClientInterface
     /**
      * Perform an API call
      *
-     * @param $path
+     * @param string $path    Path
+     * @param array  $options HTTP Client options
      * @return string
      * @throws \RuntimeException
      */
-    protected function performApiCallWithXmlResponse($path)
+    protected function performApiCallWithXmlResponse($path, array $options = [])
     {
         $response = $this->httpClient->get($path);
 
@@ -147,12 +230,13 @@ class Client implements ClientInterface
     /**
      * Perform an API call (cached)
      *
-     * @param string $path
+     * @param string $path         Path
+     * @param array  $options      HTTP Client options
      * @param bool   $cacheForever Cache response forever (on success)
      * @return string
      * @throws \RuntimeException
      */
-    protected function performApiCallWithCachedXmlResponse($path, $cacheForever = false)
+    protected function performApiCallWithCachedXmlResponse($path, array $options = [], $cacheForever = false)
     {
         $cacheKey = md5($path);
 
@@ -160,7 +244,7 @@ class Client implements ClientInterface
             return $this->cache->fetch($cacheKey);
         }
 
-        $response = $this->httpClient->get($path);
+        $response = $this->httpClient->get($path, $options);
 
         if ($response->getStatusCode() === 200) {
             $xml = $response->getBody()->getContents();

@@ -2,6 +2,10 @@
 
 namespace Adrenth\Thetvdb;
 
+use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+
 /**
  * Class XmlResponseHandler
  *
@@ -34,4 +38,22 @@ abstract class XmlResponseHandler implements ResponseHandlerInterface
      * @inheritdoc
      */
     abstract public function handle();
+
+    /**
+     * @param $rootNodeName
+     * @return array|mixed|string
+     * @throws InvalidXmlInResponseException
+     */
+    protected function getData($rootNodeName)
+    {
+        $encoder = new XmlEncoder($rootNodeName);
+
+        try {
+            $data = $encoder->decode($this->xml, 'xml');
+        } catch (UnexpectedValueException $e) {
+            throw new InvalidXmlInResponseException($e->getMessage());
+        }
+
+        return $data;
+    }
 }

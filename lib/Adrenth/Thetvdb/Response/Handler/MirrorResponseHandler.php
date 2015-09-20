@@ -7,8 +7,6 @@ use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Mirror;
 use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\XmlResponseHandler;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 
 /**
  * Class MirrorResponseHandler
@@ -28,13 +26,7 @@ class MirrorResponseHandler extends XmlResponseHandler
      */
     public function handle()
     {
-        $encoder = new XmlEncoder('Mirrors');
-
-        try {
-            $data = $encoder->decode($this->xml, 'xml');
-        } catch (UnexpectedValueException $e) {
-            throw new InvalidXmlInResponseException($e->getMessage());
-        }
+        $data = $this->getData('Mirrors');
 
         if (!is_array($data)) {
             throw new InvalidXmlInResponseException('Invalid XML in response');

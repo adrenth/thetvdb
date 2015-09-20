@@ -2,11 +2,9 @@
 
 namespace Adrenth\Thetvdb\Response\Handler;
 
+use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Adrenth\Thetvdb\XmlResponseHandler;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Exception\UnexpectedValueException;
-use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 
 class ServerTimeResponseHandler extends XmlResponseHandler
 {
@@ -17,13 +15,7 @@ class ServerTimeResponseHandler extends XmlResponseHandler
      */
     public function handle()
     {
-        $encoder = new XmlEncoder('Mirrors');
-
-        try {
-            $data = $encoder->decode($this->xml, 'xml');
-        } catch (UnexpectedValueException $e) {
-            throw new InvalidXmlInResponseException($e->getMessage());
-        }
+        $data = $this->getData('Items');
 
         if (!is_array($data) || !array_key_exists('Time', $data)) {
             throw new InvalidXmlInResponseException('Invalid XML in response');

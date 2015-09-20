@@ -5,7 +5,7 @@ namespace Adrenth\Thetvdb;
 /**
  * Client Interface
  *
- * @category Tvrage
+ * @category Thetvdb
  * @package  Adrenth\Thetvdb
  * @author   Alwin Drenth <adrenth@gmail.com>
  * @license  http://opensource.org/licenses/MIT The MIT License (MIT)
