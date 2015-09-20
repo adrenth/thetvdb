@@ -22,6 +22,29 @@ Please follow these guidelines:
 
 [TODO: Usage examples]
 
+## Available Client methods
+````
+// Cache
+setCacheTtl($cacheTtl)
+
+// Language
+getUserPreferredLanguage($accountId);
+
+// Managing User Favorites
+getUserFavorites($accountId)
+addUserFavorite($accountId, $seriesId)
+removeUserFavorite($accountId, $seriesId)
+
+// Managing User Ratings
+addUserRatingForEpisode($accountId, $episodeId, $rating)
+removeUserRatingForEpisode($accountId, $episodeId)
+addUserRatingForSeries($accountId, $seriesId, $rating)
+removeUserRatingForSeries($accountId, $seriesId)
+
+
+````
+
+
 ## Caching
 
 This package requires a Doctrine `Cache` instance. To disable caching (which I will never recommend!) just provide a `VoidCache` or `ArrayCache` instance.
