@@ -5,9 +5,12 @@ namespace Adrenth\Thetvdb;
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\Handler\MirrorResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
+use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
+use Adrenth\Thetvdb\Response\UserFavoritesResponse;
+use Adrenth\Thetvdb\Response\UserPreferredLanguageResponse;
 use Doctrine\Common\Cache\Cache;
 use GuzzleHttp\Client as HttpClient;
 
@@ -23,6 +26,9 @@ use GuzzleHttp\Client as HttpClient;
 class Client implements ClientInterface
 {
     const API_BASE_URI = 'http://thetvdb.com';
+    const API_PATH_SERVER_TIME = '/api/Updates.php';
+    const API_PATH_USER_LANGUAGE = '/api/User_PreferredLanguage.php';
+    const API_PATH_USER_FAVORITES = '/api/User_Favorites.php';
 
     /**
      * HTTP Client
@@ -104,7 +110,11 @@ class Client implements ClientInterface
      */
     public function getServerTime()
     {
-        $xml = $this->performApiCallWithXmlResponse('/api/Updates.php?type=none');
+        $xml = $this->performApiCallWithXmlResponse(static::API_PATH_SERVER_TIME, [
+            'query' => [
+                'type' => 'none'
+            ]
+        ]);
         $handler = new ServerTimeResponseHandler($xml);
         return $handler->handle();
     }
@@ -132,42 +142,93 @@ class Client implements ClientInterface
     */
 
     /**
+     * Get User Preferred Languag
+     *
      * @param string $accountId
-     * @return Language
+     * @return UserPreferredLanguageResponse
      * @throws \RuntimeException
      * @throws InvalidXmlInResponseException
      */
     public function getUserPreferredLanguage($accountId)
     {
-        $xml = $this->performApiCallWithCachedXmlResponse('/api/User_PreferredLanguage.php', [
+        $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_USER_LANGUAGE, [
             'query' => [
                 'accountid' => $accountId
             ]
         ]);
 
         $handler = new UserPreferredLanguageResponseHandler($xml);
-        $response = $handler->handle();
+        return $handler->handle();
+    }
 
-        return $response->getLanguage();
+    /**
+     * Get User Favorites
+     *
+     * @param string $accountId Account Identifier
+     * @return UserFavoritesResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function getUserFavorites($accountId)
+    {
+        $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
+            'query' => [
+                'accountid' => $accountId,
+                'type' => 'none'
+            ]
+        ]);
+
+        $handler = new UserFavoritesResponseHandler($xml);
+        return $handler->handle();
+    }
+
+    /**
+     * Add User Favorite Series
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $seriesId  Series Identifier
+     * @return UserFavoritesResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function addUserFavorite($accountId, $seriesId)
+    {
+        $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
+            'query' => [
+                'accountid' => $accountId,
+                'seriesid' => (int)$seriesId,
+                'type' => 'add'
+            ]
+        ]);
+
+        $handler = new UserFavoritesResponseHandler($xml);
+        return $handler->handle();
+    }
+
+    /**
+     * Remove User Favorite Series
+     *
+     * @param string $accountId Account Identifier
+     * @param int    $seriesId  Series Identifier
+     * @return UserFavoritesResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function removeUserFavorite($accountId, $seriesId)
+    {
+        $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
+            'query' => [
+                'accountid' => $accountId,
+                'seriesid' => (int)$seriesId,
+                'type' => 'remove'
+            ]
+        ]);
+
+        $handler = new UserFavoritesResponseHandler($xml);
+        return $handler->handle();
     }
 
     /*
-    public function getUserFavorites($accountId)
-    {
-        // type = empty
-
-    }
-
-    public function addUserFavorite($accountId, $seriesId)
-    {
-        // type = add
-    }
-
-    public function removeUserFavorite($accountId, $seriesId)
-    {
-        // type = remove
-    }
-
     public function addUserRatingForEpisode($accountId, $episodeId, $rating)
     {
         // rating 1 - 10 (not 0)
@@ -211,7 +272,7 @@ class Client implements ClientInterface
      */
     protected function performApiCallWithXmlResponse($path, array $options = [])
     {
-        $response = $this->httpClient->get($path);
+        $response = $this->httpClient->get($path, $options);
 
         if ($response->getStatusCode() === 200) {
             $xml = $response->getBody()->getContents();
