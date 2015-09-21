@@ -3,13 +3,11 @@
 namespace Adrenth\Thetvdb;
 
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
-use Adrenth\Thetvdb\Response\Handler\MirrorResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingsResponseHandler;
-use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Adrenth\Thetvdb\Response\UserFavoritesResponse;
 use Adrenth\Thetvdb\Response\UserPreferredLanguageResponse;
