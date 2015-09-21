@@ -8,6 +8,7 @@ use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingResponseHandler;
+use Adrenth\Thetvdb\Response\Handler\UserRatingsResponseHandler;
 use Adrenth\Thetvdb\Response\MirrorResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Adrenth\Thetvdb\Response\UserFavoritesResponse;
@@ -32,6 +33,7 @@ class Client implements ClientInterface
     const API_PATH_USER_LANGUAGE = '/api/User_PreferredLanguage.php';
     const API_PATH_USER_FAVORITES = '/api/User_Favorites.php';
     const API_PATH_USER_RATING = '/api/User_Rating.php';
+    const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
 
     /**
      * HTTP Client
@@ -124,11 +126,6 @@ class Client implements ClientInterface
     {
         // apikey
     }
-
-    public function getRatingsForUser($accountId, $seriesId = null)
-    {
-        // apikey
-    }
     */
 
     /**
@@ -218,6 +215,24 @@ class Client implements ClientInterface
         ]);
 
         $handler = new UserFavoritesResponseHandler($xml);
+        return $handler->handle();
+    }
+
+    public function getRatingsForUser($accountId, $seriesId = null)
+    {
+        $seriesId = ($seriesId === null) ? '' : (int)$seriesId;
+
+        $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_RATINGS, [
+            'query' => [
+                'apikey' => $this->apiKey,
+                'accountid' => $accountId,
+                'seriesid' => $seriesId,
+            ]
+        ]);
+
+        var_dump($xml);
+
+        $handler = new UserRatingsResponseHandler($xml);
         return $handler->handle();
     }
 
