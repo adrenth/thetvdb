@@ -5,6 +5,14 @@ namespace Adrenth\Thetvdb;
 /**
  * Class Language
  *
+ * @see http://www.thetvdb.com/wiki/index.php?title=API:languages.xml
+ *      The languages.xml file holds a list of all of the languages available on this website.
+ *      NOTE: Previous interfaces primarily used the language id for lookups. This new API uses the 2 character
+ *      abbreviation. This file will rarely change, so you may consider hard-coding these values into your program
+ *      and updating them only with new releases.
+ *      In addition to the two letter abbreviations the word "all" can be used as a language option within the API to
+ *      get information in all languages.
+ *
  * @category Thetvdb
  * @package  Adrenth\Thetvdb
  * @author   Alwin Drenth <adrenth@gmail.com>

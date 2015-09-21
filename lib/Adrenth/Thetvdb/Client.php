@@ -3,11 +3,13 @@
 namespace Adrenth\Thetvdb;
 
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
+use Adrenth\Thetvdb\Response\Handler\SeriesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingsResponseHandler;
+use Adrenth\Thetvdb\Response\SeriesResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
 use Adrenth\Thetvdb\Response\UserFavoritesResponse;
 use Adrenth\Thetvdb\Response\UserPreferredLanguageResponse;
@@ -32,6 +34,7 @@ class Client implements ClientInterface
     const API_PATH_USER_FAVORITES = '/api/User_Favorites.php';
     const API_PATH_USER_RATING = '/api/User_Rating.php';
     const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
+    const API_PATH_SERIES = '/api/GetSeries.php';
 
     /**
      * HTTP Client
@@ -109,12 +112,35 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
-    /*
+    /**
+     * Get Series
+     *
+     * @param string        $name     Search query; exact match returns 1 result
+     * @param Language|null $language Language
+     * @return SeriesResponse
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
     public function getSeries($name, Language $language = null)
     {
+        $query = [
+            'seriesname' => $name,
+        ];
 
+        if ($language !== null) {
+            $query['language'] = $language->getCode();
+        }
+
+        $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_SERIES, [
+            'query' => $query
+        ]);
+
+        $handler = new SeriesResponseHandler($xml);
+        return $handler->handle();
     }
 
+    /*
     public function getSeriesByRemoteId($imdbId, $zap2itId, Language $language = null)
     {
 
@@ -394,7 +420,7 @@ class Client implements ClientInterface
      */
     protected function performApiCallWithCachedXmlResponse($path, array $options = [], $cacheForever = false)
     {
-        $cacheKey = md5($path);
+        $cacheKey = md5($path . md5(serialize($options)));
 
         if ($this->cache->contains($cacheKey)) {
             return $this->cache->fetch($cacheKey);
