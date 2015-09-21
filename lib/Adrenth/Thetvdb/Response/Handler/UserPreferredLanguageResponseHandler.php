@@ -11,7 +11,7 @@ use Adrenth\Thetvdb\XmlResponseHandler;
  * Class UserPreferredLanguageResponseHandler
  *
  * @category Thetvdb
- * @package  Adrenth\Thetvdb
+ * @package  Adrenth\Thetvdb\Response\Handler
  * @author   Alwin Drenth <adrenth@gmail.com>
  * @license  http://opensource.org/licenses/MIT The MIT License (MIT)
  * @link     https://github.com/adrenth/thetvdb
