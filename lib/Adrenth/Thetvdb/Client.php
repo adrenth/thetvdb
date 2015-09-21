@@ -216,19 +216,26 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
+    /**
+     * Get Ratings for User
+     *
+     * @param int $accountId
+     * @param int|null $seriesId
+     * @return Response\UserRatingsResponse
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
     public function getRatingsForUser($accountId, $seriesId = null)
     {
-        $seriesId = ($seriesId === null) ? '' : (int)$seriesId;
+        $seriesId = ($seriesId === null) ? null : (int)$seriesId;
 
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_RATINGS, [
             'query' => [
                 'apikey' => $this->apiKey,
                 'accountid' => $accountId,
-                'seriesid' => $seriesId,
+                'seriesid' => (string)$seriesId,
             ]
         ]);
-
-        var_dump($xml);
 
         $handler = new UserRatingsResponseHandler($xml);
         return $handler->handle();
