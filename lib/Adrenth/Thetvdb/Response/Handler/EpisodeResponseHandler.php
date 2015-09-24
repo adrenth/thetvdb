@@ -45,33 +45,33 @@ class EpisodeResponseHandler extends XmlResponseHandler
      */
     private function getEpisodeFromArray(array $data)
     {
-        $firstAired = strtotime(@$data['FirstAired']);
+        $firstAired = strtotime($data['FirstAired']);
         $firstAired = $firstAired !== false ? new \DateTime(date('Y-m-d', $firstAired)) : '';
 
         $episode = new Episode();
-        return $episode->setIdentifier(@$data['seriesid'])
-            ->setSeasonIdentifier(@$data['seasonid'])
-            ->setCombinedEpisodeNumber(@$data['Combined_episodenumber'])
-            ->setCombinedSeason(@$data['Combined_season'])
-            ->setDvdChapter(@$data['DVD_chapter'])
-            ->setDvdDiscId(@$data['DVD_chapter'])
-            ->setDvdEpisodeNumber(@$data['DVD_episodenumber'])
-            ->setDvdSeason(@$data['DVD_season'])
-            ->setDirector(@$data['Director'])
-            ->setImageFlag(@$data['EpImgFlag'])
-            ->setName(@$data['EpisodeName'])
-            ->setNumber(@$data['EpisodeNumber'])
+        return $episode->setIdentifier($data['seriesid'])
+            ->setSeasonIdentifier($data['seasonid'])
+            ->setCombinedEpisodeNumber($data['Combined_episodenumber'])
+            ->setCombinedSeason($data['Combined_season'])
+            ->setDvdChapter($data['DVD_chapter'])
+            ->setDvdDiscId($data['DVD_chapter'])
+            ->setDvdEpisodeNumber($data['DVD_episodenumber'])
+            ->setDvdSeason($data['DVD_season'])
+            ->setDirector($data['Director'])
+            ->setImageFlag($data['EpImgFlag'])
+            ->setName($data['EpisodeName'])
+            ->setNumber($data['EpisodeNumber'])
             ->setFirstAired($firstAired)
-            ->setGuestStars(@$data['GuestStars'])
-            ->setImdbId(@$data['IMDB_ID'])
-            ->setLanguage(new Language(@$data['Language']))
-            ->setOverview(@$data['Overview'])
-            ->setProductionCode(@$data['ProductionCode'])
-            ->setRating(@$data['Rating'])
-            ->setSeasonNumber(@$data['SeasonNumber'])
-            ->setWriters(@$data['Writer'])
-            ->setAbsoluteNumber(@$data['absolute_number'])
-            ->setFilename(@$data['filename'])
-            ->setLastUpdated(new \DateTime(date('Y-m-d H:i:s', @$data['lastupdated'])));
+            ->setGuestStars($data['GuestStars'])
+            ->setImdbId($data['IMDB_ID'])
+            ->setLanguage(new Language($data['Language']))
+            ->setOverview($data['Overview'])
+            ->setProductionCode($data['ProductionCode'])
+            ->setRating($data['Rating'])
+            ->setSeasonNumber($data['SeasonNumber'])
+            ->setWriters($data['Writer'])
+            ->setAbsoluteNumber($data['absolute_number'])
+            ->setFilename($data['filename'])
+            ->setLastUpdated(new \DateTime(date('Y-m-d H:i:s', $data['lastupdated'])));
     }
 }

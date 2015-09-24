@@ -60,12 +60,12 @@ class SeriesResponseHandler extends XmlResponseHandler
         $series = new Series();
         return $series->setIdentifier($data['seriesid'])
             ->setLanguage(new Language($data['language']))
-            ->setName(@$data['SeriesName'])
-            ->setBanner(@$data['banner'])
-            ->setOverview(@$data['Overview'])
+            ->setName($data['SeriesName'])
+            ->setBanner($data['banner'])
+            ->setOverview($data['Overview'])
             ->setFirstAired(new \DateTime(date('Y-m-d', strtotime($data['FirstAired']))))
-            ->setNetwork(@$data['Network'])
-            ->setImdbId(@$data['IMDB_ID'])
-            ->setZap2itId(@$data['zap2it_id']);
+            ->setNetwork($data['Network'])
+            ->setImdbId($data['IMDB_ID'])
+            ->setZap2itId($data['zap2it_id']);
     }
 }
