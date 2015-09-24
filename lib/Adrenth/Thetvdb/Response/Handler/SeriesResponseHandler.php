@@ -58,14 +58,43 @@ class SeriesResponseHandler extends XmlResponseHandler
     private function getSeriesFromArray(array $data)
     {
         $series = new Series();
-        return $series->setIdentifier($data['seriesid'])
-            ->setLanguage(new Language($data['language']))
-            ->setName($data['SeriesName'])
-            ->setBanner($data['banner'])
-            ->setOverview($data['Overview'])
-            ->setFirstAired(new \DateTime(date('Y-m-d', strtotime($data['FirstAired']))))
-            ->setNetwork($data['Network'])
-            ->setImdbId($data['IMDB_ID'])
-            ->setZap2itId($data['zap2it_id']);
+
+        if (array_key_exists('seriesid', $data)) {
+            $series->setIdentifier($data['seriesid']);
+        }
+
+        if (array_key_exists('language', $data)) {
+            $series->setLanguage(new Language($data['language']));
+        }
+
+        if (array_key_exists('SeriesName', $data)) {
+            $series->setName($data['SeriesName']);
+        }
+
+        if (array_key_exists('banner', $data)) {
+            $series->setBanner($data['banner']);
+        }
+
+        if (array_key_exists('Overview', $data)) {
+            $series->setOverview($data['Overview']);
+        }
+
+        if (array_key_exists('FirstAired', $data)) {
+            $series->setFirstAired(new \DateTime(date('Y-m-d', strtotime($data['FirstAired']))));
+        }
+
+        if (array_key_exists('Network', $data)) {
+            $series->setNetwork($data['Network']);
+        }
+
+        if (array_key_exists('IMDB_ID', $data)) {
+            $series->setImdbId($data['IMDB_ID']);
+        }
+
+        if (array_key_exists('language', $data)) {
+            $series->setZap2itId($data['zap2it_id']);
+        }
+
+        return $series;
     }
 }
