@@ -91,7 +91,7 @@ class SeriesResponseHandler extends XmlResponseHandler
             $series->setImdbId($data['IMDB_ID']);
         }
 
-        if (array_key_exists('language', $data)) {
+        if (array_key_exists('zap2it_id', $data)) {
             $series->setZap2itId($data['zap2it_id']);
         }
 
