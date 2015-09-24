@@ -1,6 +1,6 @@
 # adrenth/thetvdb
 
-This is an API client for the thetvdb.com website. It's using the XML feeds that are publicly available. For more info visit 
+This is an API client for the thetvdb.com website. It's using the XML feeds that are publicly available.
 
 ## API Key Registration
 
@@ -20,30 +20,70 @@ Please follow these guidelines:
 
 ## Usage
 
-[TODO: Usage examples]
-
-## Available Client methods
-````
-// Cache
-setCacheTtl($cacheTtl)
-
-// Language
-getUserPreferredLanguage($accountId);
-
-// Managing User Favorites
-getUserFavorites($accountId)
-addUserFavorite($accountId, $seriesId)
-removeUserFavorite($accountId, $seriesId)
-
-// Managing User Ratings
-addUserRatingForEpisode($accountId, $episodeId, $rating)
-removeUserRatingForEpisode($accountId, $episodeId)
-addUserRatingForSeries($accountId, $seriesId, $rating)
-removeUserRatingForSeries($accountId, $seriesId)
-
+Create a Client instance:
 
 ````
+$apiKey = 'yourapikey';
+$cache = new \Doctrine\Common\Cache\FilesystemCache('path/to/cache');
+$client = new Client($cache, $apiKey);
+````
+### Cache
+````
+$client->setCacheTtl(3600); // in seconds
+````
 
+### Language
+````
+$language = new Language('nl');
+
+echo $language->getCode();
+// 'nl'
+echo $language->getLabel();
+// 'Nederlands'
+
+$language = $client->getUserPreferredLanguage($accountId);
+````
+
+#### Managing User Ratings
+````
+// Returns a UserFavoritesResponse
+$favorites = $client->getUserFavorites($accountId);
+$seriesIds = $favorites->getSeriesIds();
+
+$favorites = $client->addUserFavorite($accountId, $seriesId);
+$seriesIds = $favorites->getSeriesIds();
+
+$favorites = $client->removeUserFavorite($accountId, $seriesId);
+$seriesIds = $favorites->getSeriesIds();
+````
+
+#### Managing User Ratings
+````
+$rating = $client->addUserRatingForEpisode($accountId, $episodeId, $rating);
+$rating = $client->removeUserRatingForEpisode($accountId, $episodeId);
+$rating = $client->addUserRatingForSeries($accountId, $seriesId, $rating);
+$rating = $client->removeUserRatingForSeries($accountId, $seriesId);
+
+echo $rating->getUserRating();
+// 7
+echo $rating->getCommunityRating();
+// 7.65
+````
+
+#### Searching / Fetching Series
+````
+$language = new Language('nl');
+$response = $client->getSeries('Ray Donovan', $language, $accountId);
+$seriesCollection = $response->getSeries();
+
+foreach ($seriesCollection as $series) {
+	echo $series->getName();
+}
+
+$response = $client->getSeriesByImdbId('tt0290978');
+$response = $client->getSeriesByImdbId('tt0290978', new \Adrenth\Thetvdb\Language('de'));
+$response = $client->getSeriesByZap2itId('EP01579745', new \Adrenth\Thetvdb\Language('nl'));
+```` 
 
 ## Caching
 
