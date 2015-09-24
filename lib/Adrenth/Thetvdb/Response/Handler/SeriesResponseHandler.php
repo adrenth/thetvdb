@@ -58,7 +58,7 @@ class SeriesResponseHandler extends XmlResponseHandler
     private function getSeriesFromArray(array $data)
     {
         $series = new Series();
-        $series->setIdentifier($data['seriesid'])
+        return $series->setIdentifier($data['seriesid'])
             ->setLanguage(new Language($data['language']))
             ->setName(@$data['SeriesName'])
             ->setBanner(@$data['banner'])
@@ -67,7 +67,5 @@ class SeriesResponseHandler extends XmlResponseHandler
             ->setNetwork(@$data['Network'])
             ->setImdbId(@$data['IMDB_ID'])
             ->setZap2itId(@$data['zap2it_id']);
-
-        return $series;
     }
 }

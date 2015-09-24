@@ -3,6 +3,7 @@
 namespace Adrenth\Thetvdb;
 
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
+use Adrenth\Thetvdb\Response\Handler\EpisodeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\SeriesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
@@ -37,6 +38,7 @@ class Client implements ClientInterface
     const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
     const API_PATH_SERIES = '/api/GetSeries.php';
     const API_PATH_SERIES_BY_REMOTE_ID = '/api/GetSeriesByRemoteID.php';
+    const API_PATH_EPISODE = '/api/GetEpisodeByAirDate.php';
 
     /**
      * HTTP Client
@@ -192,12 +194,36 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
-    /*
+    /**
+     * Get Episode by air date
+     *
+     * @param int           $seriesId
+     * @param \DateTime     $airDate
+     * @param Language|null $language
+     * @return Response\EpisodeResponse
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
     public function getEpisodeByAirDate($seriesId, \DateTime $airDate, Language $language = null)
     {
-        // apikey
+        $query = [
+            'apikey' => $this->apiKey,
+            'seriesid' => $seriesId,
+            'airdate' => $airDate->format('Y-m-d')
+        ];
+
+        if ($language !== null) {
+            $query['language'] = $language->getCode();
+        }
+
+        $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_EPISODE, [
+            'query' => $query
+        ]);
+
+        $handler = new EpisodeResponseHandler($xml);
+        return $handler->handle();
     }
-    */
 
     /**
      * Get User Preferred Languag
@@ -292,7 +318,7 @@ class Client implements ClientInterface
     /**
      * Get Ratings for User
      *
-     * @param int $accountId
+     * @param int      $accountId
      * @param int|null $seriesId
      * @return Response\UserRatingsResponse
      * @throws \RuntimeException
