@@ -28,6 +28,7 @@ use GuzzleHttp\Client as HttpClient;
  */
 class Client implements ClientInterface
 {
+    // TODO get rid of constants since the are used once
     const API_BASE_URI = 'http://thetvdb.com';
     const API_PATH_SERVER_TIME = '/api/Updates.php';
     const API_PATH_USER_LANGUAGE = '/api/User_PreferredLanguage.php';
@@ -35,6 +36,7 @@ class Client implements ClientInterface
     const API_PATH_USER_RATING = '/api/User_Rating.php';
     const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
     const API_PATH_SERIES = '/api/GetSeries.php';
+    const API_PATH_SERIES_BY_REMOTE_ID = '/api/GetSeriesByRemoteID.php';
 
     /**
      * HTTP Client
@@ -124,9 +126,7 @@ class Client implements ClientInterface
      */
     public function getSeries($name, Language $language = null)
     {
-        $query = [
-            'seriesname' => $name,
-        ];
+        $query = ['seriesname' => $name];
 
         if ($language !== null) {
             $query['language'] = $language->getCode();
@@ -140,12 +140,59 @@ class Client implements ClientInterface
         return $handler->handle();
     }
 
-    /*
-    public function getSeriesByRemoteId($imdbId, $zap2itId, Language $language = null)
+    /**
+     * Get Series by IMDB ID
+     *
+     * @param string        $imdbId
+     * @param Language|null $language
+     * @return SeriesResponse
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function getSeriesByImdbId($imdbId, Language $language = null)
     {
+        $query = ['imdbid' => $imdbId];
 
+        if ($language !== null) {
+            $query['language'] = $language->getCode();
+        }
+
+        $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_SERIES_BY_REMOTE_ID, [
+            'query' => $query
+        ]);
+
+        $handler = new SeriesResponseHandler($xml);
+        return $handler->handle();
     }
 
+    /**
+     * Get Series by ZAP2IT ID
+     *
+     * @param string        $zap2itId
+     * @param Language|null $language
+     * @return SeriesResponse
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws InvalidXmlInResponseException
+     */
+    public function getSeriesByZap2itId($zap2itId, Language $language = null)
+    {
+        $query = ['zap2it' => $zap2itId];
+
+        if ($language !== null) {
+            $query['language'] = $language->getCode();
+        }
+
+        $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_SERIES_BY_REMOTE_ID, [
+            'query' => $query
+        ]);
+
+        $handler = new SeriesResponseHandler($xml);
+        return $handler->handle();
+    }
+
+    /*
     public function getEpisodeByAirDate($seriesId, \DateTime $airDate, Language $language = null)
     {
         // apikey
