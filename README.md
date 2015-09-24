@@ -18,6 +18,14 @@ Please follow these guidelines:
 
 *Source: thetvdb.com*
 
+## Installation
+
+Install this package using composer:
+
+````
+$ composer require adrenth/thetvdb
+````
+
 ## Usage
 
 Create a Client instance:
