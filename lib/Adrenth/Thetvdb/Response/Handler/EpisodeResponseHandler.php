@@ -121,5 +121,7 @@ class EpisodeResponseHandler extends XmlResponseHandler
         if (array_key_exists('lastupdated', $data)) {
             $episode->setLastUpdated(new \DateTime(date('Y-m-d H:i:s', $data['lastupdated'])));
         }
+
+        return $episode;
     }
 }
