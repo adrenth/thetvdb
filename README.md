@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/adrenth/thetvdb.svg?branch=master)](https://travis-ci.org/adrenth/thetvdb)
 [![Latest Stable Version](https://poser.pugx.org/adrenth/thetvdb/v/stable)](https://packagist.org/packages/adrenth/thetvdb) [![Total Downloads](https://poser.pugx.org/adrenth/thetvdb/downloads)](https://packagist.org/packages/adrenth/thetvdb) [![Latest Unstable Version](https://poser.pugx.org/adrenth/thetvdb/v/unstable)](https://packagist.org/packages/adrenth/thetvdb) [![License](https://poser.pugx.org/adrenth/thetvdb/license)](https://packagist.org/packages/adrenth/thetvdb)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/c575fd5b-0baa-4eb1-ad4d-8ab5fb20ba9c/mini.png)](https://insight.sensiolabs.com/projects/c575fd5b-0baa-4eb1-ad4d-8ab5fb20ba9c)
 
 This is an API client for the thetvdb.com website. It's using the XML feeds that are publicly available.
 
@@ -105,3 +106,4 @@ For more information about Doctrine Cache visit [https://github.com/doctrine/cac
 ## Contributing
 
 Please contribute to make this package even better.
+

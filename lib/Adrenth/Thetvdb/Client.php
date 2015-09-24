@@ -29,7 +29,6 @@ use GuzzleHttp\Client as HttpClient;
  */
 class Client implements ClientInterface
 {
-    // TODO get rid of constants since the are used once
     const API_BASE_URI = 'http://thetvdb.com';
     const API_PATH_SERVER_TIME = '/api/Updates.php';
     const API_PATH_USER_LANGUAGE = '/api/User_PreferredLanguage.php';
