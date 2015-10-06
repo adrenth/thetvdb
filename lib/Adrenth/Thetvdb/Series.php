@@ -58,7 +58,7 @@ class Series
      */
     public function setIdentifier($identifier)
     {
-        $this->identifier = (int)$identifier;
+        $this->identifier = (int) $identifier;
         return $this;
     }
 

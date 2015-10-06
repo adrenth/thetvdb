@@ -34,7 +34,7 @@ class UserFavoritesResponseHandler extends XmlResponseHandler
 
         // Contains 1 item
         if (!is_array($data['Series']) && $data['Series'] !== '') {
-            $seriesIds[] = (int)$data['Series'];
+            $seriesIds[] = (int) $data['Series'];
             return new UserFavoritesResponse($seriesIds);
         } elseif ($data['Series'] === '') {
             return new UserFavoritesResponse();
@@ -43,7 +43,7 @@ class UserFavoritesResponseHandler extends XmlResponseHandler
         // Contains multiple items
         foreach ($data['Series'] as $seriesId) {
             if ($seriesId !== '') {
-                $seriesIds[] = (int)$seriesId;
+                $seriesIds[] = (int) $seriesId;
             }
         }
 

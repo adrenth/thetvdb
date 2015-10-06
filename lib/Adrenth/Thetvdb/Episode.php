@@ -103,7 +103,7 @@ class Episode
      */
     public function setIdentifier($identifier)
     {
-        $this->identifier = (int)$identifier;
+        $this->identifier = (int) $identifier;
         return $this;
     }
 
@@ -125,7 +125,7 @@ class Episode
      */
     public function setSeasonIdentifier($seasonIdentifier)
     {
-        $this->seasonIdentifier = (int)$seasonIdentifier;
+        $this->seasonIdentifier = (int) $seasonIdentifier;
         return $this;
     }
 
@@ -147,7 +147,7 @@ class Episode
      */
     public function setSeasonNumber($seasonNumber)
     {
-        $this->seasonNumber = (int)$seasonNumber;
+        $this->seasonNumber = (int) $seasonNumber;
         return $this;
     }
 
@@ -169,7 +169,7 @@ class Episode
      */
     public function setCombinedEpisodeNumber($combinedEpisodeNumber)
     {
-        $this->combinedEpisodeNumber = (int)$combinedEpisodeNumber;
+        $this->combinedEpisodeNumber = (int) $combinedEpisodeNumber;
         return $this;
     }
 
@@ -323,7 +323,7 @@ class Episode
      */
     public function setImageFlag($imageFlag)
     {
-        $this->imageFlag = (int)$imageFlag;
+        $this->imageFlag = (int) $imageFlag;
         return $this;
     }
 
@@ -367,7 +367,7 @@ class Episode
      */
     public function setNumber($number)
     {
-        $this->number = (int)$number;
+        $this->number = (int) $number;
         return $this;
     }
 
@@ -384,7 +384,7 @@ class Episode
     /**
      * Set firstAired
      *
-     * @param \DateTime $firstAired
+     * @param \DateTime|null $firstAired
      * @return $this
      */
     public function setFirstAired(\DateTime $firstAired = null)
@@ -453,7 +453,7 @@ class Episode
      * @param Language $language
      * @return $this
      */
-    public function setLanguage($language)
+    public function setLanguage(Language $language)
     {
         $this->language = $language;
         return $this;
@@ -607,7 +607,7 @@ class Episode
      * @param \DateTime $lastUpdated
      * @return $this
      */
-    public function setLastUpdated($lastUpdated)
+    public function setLastUpdated(\DateTime $lastUpdated)
     {
         $this->lastUpdated = $lastUpdated;
         return $this;

@@ -23,7 +23,7 @@ class ServerTimeResponse implements ResponseInterface
      */
     public function __construct($serverTime)
     {
-        $this->serverTime = (int)$serverTime;
+        $this->serverTime = (int) $serverTime;
     }
 
     /**

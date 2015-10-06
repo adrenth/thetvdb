@@ -23,7 +23,7 @@ class UserRatingResponse implements ResponseInterface
      */
     public function __construct($rating)
     {
-        $this->rating = (float)$rating;
+        $this->rating = (float) $rating;
     }
 
     /**
