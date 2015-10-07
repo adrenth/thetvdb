@@ -111,6 +111,7 @@ class Client implements ClientInterface
                 'type' => 'none'
             ]
         ]);
+
         $handler = new ServerTimeResponseHandler($xml);
         return $handler->handle();
     }
@@ -282,7 +283,7 @@ class Client implements ClientInterface
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
             'query' => [
                 'accountid' => $accountId,
-                'seriesid' => (int)$seriesId,
+                'seriesid' => (int) $seriesId,
                 'type' => 'add'
             ]
         ]);
@@ -305,7 +306,7 @@ class Client implements ClientInterface
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
             'query' => [
                 'accountid' => $accountId,
-                'seriesid' => (int)$seriesId,
+                'seriesid' => (int) $seriesId,
                 'type' => 'remove'
             ]
         ]);
@@ -325,13 +326,13 @@ class Client implements ClientInterface
      */
     public function getRatingsForUser($accountId, $seriesId = null)
     {
-        $seriesId = ($seriesId === null) ? null : (int)$seriesId;
+        $seriesId = ($seriesId === null) ? null : (int) $seriesId;
 
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_RATINGS, [
             'query' => [
                 'apikey' => $this->apiKey,
                 'accountid' => $accountId,
-                'seriesid' => (string)$seriesId,
+                'seriesid' => $seriesId,
             ]
         ]);
 
@@ -352,13 +353,13 @@ class Client implements ClientInterface
      */
     public function addUserRatingForEpisode($accountId, $episodeId, $rating)
     {
-        $rating = (int)$rating;
+        $rating = (int) $rating;
 
         if (!($rating >= 1 && $rating <= 10)) {
             throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
         }
 
-        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, $rating);
+        $xml = $this->performUserRating($accountId, 'episode', (int) $episodeId, $rating);
 
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
@@ -377,13 +378,13 @@ class Client implements ClientInterface
      */
     public function addUserRatingForSeries($accountId, $seriesId, $rating)
     {
-        $rating = (int)$rating;
+        $rating = (int) $rating;
 
         if (!($rating >= 1 && $rating <= 10)) {
             throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
         }
 
-        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, $rating);
+        $xml = $this->performUserRating($accountId, 'series', (int) $seriesId, $rating);
 
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
@@ -400,7 +401,8 @@ class Client implements ClientInterface
      */
     public function removeUserRatingForEpisode($accountId, $episodeId)
     {
-        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, 0);
+        $xml = $this->performUserRating($accountId, 'episode', (int) $episodeId, 0);
+
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
@@ -416,7 +418,8 @@ class Client implements ClientInterface
      */
     public function removeUserRatingForSeries($accountId, $seriesId)
     {
-        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, 0);
+        $xml = $this->performUserRating($accountId, 'series', (int) $seriesId, 0);
+
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
@@ -451,7 +454,7 @@ class Client implements ClientInterface
      */
     public function setCacheTtl($cacheTtl)
     {
-        $this->cacheTtl = (int)$cacheTtl;
+        $this->cacheTtl = (int) $cacheTtl;
         return $this;
     }
 
