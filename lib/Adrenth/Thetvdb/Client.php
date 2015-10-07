@@ -2,7 +2,6 @@
 
 namespace Adrenth\Thetvdb;
 
-use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\Handler\EpisodeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\SeriesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
@@ -10,11 +9,6 @@ use Adrenth\Thetvdb\Response\Handler\UserFavoritesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserPreferredLanguageResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\UserRatingsResponseHandler;
-use Adrenth\Thetvdb\Response\SeriesResponse;
-use Adrenth\Thetvdb\Response\ServerTimeResponse;
-use Adrenth\Thetvdb\Response\UserFavoritesResponse;
-use Adrenth\Thetvdb\Response\UserPreferredLanguageResponse;
-use Adrenth\Thetvdb\Response\UserRatingResponse;
 use Doctrine\Common\Cache\Cache;
 use GuzzleHttp\Client as HttpClient;
 
@@ -88,7 +82,7 @@ class Client implements ClientInterface
      * @return void
      * @throws \RuntimeException
      */
-    public function init()
+    protected function init()
     {
         $this->httpClient = new HttpClient(
             [
@@ -98,11 +92,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get Server Time (last Updated)
+     * {@inheritdoc}
      *
-     * @return ServerTimeResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getServerTime()
     {
@@ -111,19 +103,15 @@ class Client implements ClientInterface
                 'type' => 'none'
             ]
         ]);
+
         $handler = new ServerTimeResponseHandler($xml);
         return $handler->handle();
     }
 
     /**
-     * Get Series
+     * {@inheritdoc}
      *
-     * @param string        $name     Search query; exact match returns 1 result
-     * @param Language|null $language Language
-     * @return SeriesResponse
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getSeries($name, Language $language = null)
     {
@@ -142,14 +130,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get Series by IMDB ID
+     * {@inheritdoc}
      *
-     * @param string        $imdbId
-     * @param Language|null $language
-     * @return SeriesResponse
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getSeriesByImdbId($imdbId, Language $language = null)
     {
@@ -168,14 +151,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get Series by ZAP2IT ID
+     * {@inheritdoc}
      *
-     * @param string        $zap2itId
-     * @param Language|null $language
-     * @return SeriesResponse
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getSeriesByZap2itId($zap2itId, Language $language = null)
     {
@@ -194,15 +172,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get Episode by air date
+     * {@inheritdoc}
      *
-     * @param int           $seriesId
-     * @param \DateTime     $airDate
-     * @param Language|null $language
-     * @return Response\EpisodeResponse
-     * @throws \InvalidArgumentException
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getEpisodeByAirDate($seriesId, \DateTime $airDate, Language $language = null)
     {
@@ -225,12 +197,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get User Preferred Languag
+     * {@inheritdoc}
      *
-     * @param string $accountId
-     * @return UserPreferredLanguageResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getUserPreferredLanguage($accountId)
     {
@@ -245,15 +214,9 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get User Favorites
+     * {@inheritdoc}
      *
-     * Caution: This method returns a cached response from Server. If you need the actual list of favorites
-     * after adding or removing series to favorites use that response instead.
-     *
-     * @param string $accountId Account Identifier
-     * @return UserFavoritesResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getUserFavorites($accountId)
     {
@@ -269,20 +232,16 @@ class Client implements ClientInterface
     }
 
     /**
-     * Add User Favorite Series
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $seriesId  Series Identifier
-     * @return UserFavoritesResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function addUserFavorite($accountId, $seriesId)
     {
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
             'query' => [
                 'accountid' => $accountId,
-                'seriesid' => (int)$seriesId,
+                'seriesid' => (int) $seriesId,
                 'type' => 'add'
             ]
         ]);
@@ -292,20 +251,16 @@ class Client implements ClientInterface
     }
 
     /**
-     * Remove User Favorite Series
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $seriesId  Series Identifier
-     * @return UserFavoritesResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function removeUserFavorite($accountId, $seriesId)
     {
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_FAVORITES, [
             'query' => [
                 'accountid' => $accountId,
-                'seriesid' => (int)$seriesId,
+                'seriesid' => (int) $seriesId,
                 'type' => 'remove'
             ]
         ]);
@@ -315,23 +270,19 @@ class Client implements ClientInterface
     }
 
     /**
-     * Get Ratings for User
+     * {@inheritdoc}
      *
-     * @param int      $accountId
-     * @param int|null $seriesId
-     * @return Response\UserRatingsResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function getRatingsForUser($accountId, $seriesId = null)
     {
-        $seriesId = ($seriesId === null) ? null : (int)$seriesId;
+        $seriesId = ($seriesId === null) ? null : (int) $seriesId;
 
         $xml = $this->performApiCallWithXmlResponse(static::API_PATH_USER_RATINGS, [
             'query' => [
                 'apikey' => $this->apiKey,
                 'accountid' => $accountId,
-                'seriesid' => (string)$seriesId,
+                'seriesid' => $seriesId,
             ]
         ]);
 
@@ -340,83 +291,67 @@ class Client implements ClientInterface
     }
 
     /**
-     * Add User Rating for Episode with given Episode Identifier
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $episodeId Episode Identifier
-     * @param int    $rating    Rating 1 - 10
-     * @return UserRatingResponse
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @throws InvalidXmlInResponseException
      */
     public function addUserRatingForEpisode($accountId, $episodeId, $rating)
     {
-        $rating = (int)$rating;
+        $rating = (int) $rating;
 
         if (!($rating >= 1 && $rating <= 10)) {
             throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
         }
 
-        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, $rating);
+        $xml = $this->performUserRating($accountId, 'episode', (int) $episodeId, $rating);
 
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
 
     /**
-     * Add User Rating for Series with given Series Identifier
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $seriesId  Series Identifier
-     * @param int    $rating    Rating 1 - 10
-     * @return UserRatingResponse
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
-     * @throws InvalidXmlInResponseException
      */
     public function addUserRatingForSeries($accountId, $seriesId, $rating)
     {
-        $rating = (int)$rating;
+        $rating = (int) $rating;
 
         if (!($rating >= 1 && $rating <= 10)) {
             throw new \InvalidArgumentException('Invalid rating, must be an integer value from 1 to 10');
         }
 
-        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, $rating);
+        $xml = $this->performUserRating($accountId, 'series', (int) $seriesId, $rating);
 
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
 
     /**
-     * Remove User Rating for Episode with given Episode Identifier
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $episodeId Episode Identifier
-     * @return UserRatingResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function removeUserRatingForEpisode($accountId, $episodeId)
     {
-        $xml = $this->performUserRating($accountId, 'episode', (int)$episodeId, 0);
+        $xml = $this->performUserRating($accountId, 'episode', (int) $episodeId, 0);
+
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
 
     /**
-     * Remove User Rating for Series with given Series Identifier
+     * {@inheritdoc}
      *
-     * @param string $accountId Account Identifier
-     * @param int    $seriesId  Series Identifier
-     * @return UserRatingResponse
      * @throws \RuntimeException
-     * @throws InvalidXmlInResponseException
      */
     public function removeUserRatingForSeries($accountId, $seriesId)
     {
-        $xml = $this->performUserRating($accountId, 'series', (int)$seriesId, 0);
+        $xml = $this->performUserRating($accountId, 'series', (int) $seriesId, 0);
+
         $handler = new UserRatingResponseHandler($xml);
         return $handler->handle();
     }
@@ -451,7 +386,7 @@ class Client implements ClientInterface
      */
     public function setCacheTtl($cacheTtl)
     {
-        $this->cacheTtl = (int)$cacheTtl;
+        $this->cacheTtl = (int) $cacheTtl;
         return $this;
     }
 

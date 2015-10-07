@@ -29,9 +29,9 @@ abstract class Rating
      */
     public function __construct($identifier, $userRating, $communityRating)
     {
-        $this->identifier = (int)$identifier;
-        $this->userRating = (int)$userRating;
-        $this->communityRating = (float)$communityRating;
+        $this->identifier = (int) $identifier;
+        $this->userRating = (int) $userRating;
+        $this->communityRating = (float) $communityRating;
     }
 
     /**
