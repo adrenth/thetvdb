@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+* Small improvements to code style and php docblocks
+* Added functions to the `ClientInterface`
+
 ## 0.1.2
 
 * phpunit fails to run because the TestInit file was misplaced
