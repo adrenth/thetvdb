@@ -3,7 +3,7 @@
 namespace Adrenth\Thetvdb;
 
 /**
- * Class Client
+ * Class ResponseInterface
  *
  * @category Thetvdb
  * @package  Adrenth\Thetvdb

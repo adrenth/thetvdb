@@ -19,7 +19,8 @@ use Adrenth\Thetvdb\XmlResponseHandler;
 class UserPreferredLanguageResponseHandler extends XmlResponseHandler
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @return UserPreferredLanguageResponse
      * @throws InvalidXmlInResponseException
      */

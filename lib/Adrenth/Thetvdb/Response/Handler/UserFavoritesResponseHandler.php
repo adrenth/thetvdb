@@ -18,7 +18,8 @@ use Adrenth\Thetvdb\XmlResponseHandler;
 class UserFavoritesResponseHandler extends XmlResponseHandler
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @return UserFavoritesResponse
      * @throws InvalidXmlInResponseException
      */
