@@ -18,7 +18,8 @@ use Adrenth\Thetvdb\XmlResponseHandler;
 class ServerTimeResponseHandler extends XmlResponseHandler
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @return ServerTimeResponse
      * @throws InvalidXmlInResponseException
      */
