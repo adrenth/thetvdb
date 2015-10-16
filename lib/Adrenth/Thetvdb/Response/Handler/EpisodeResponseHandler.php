@@ -20,7 +20,8 @@ use Adrenth\Thetvdb\XmlResponseHandler;
 class EpisodeResponseHandler extends XmlResponseHandler
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
      * @return EpisodeResponse
      * @throws InvalidXmlInResponseException
      */

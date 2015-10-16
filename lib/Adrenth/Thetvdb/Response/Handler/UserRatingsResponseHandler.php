@@ -20,7 +20,7 @@ use Adrenth\Thetvdb\XmlResponseHandler;
 class UserRatingsResponseHandler extends XmlResponseHandler
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      * @return UserRatingsResponse
      * @throws InvalidXmlInResponseException
      */

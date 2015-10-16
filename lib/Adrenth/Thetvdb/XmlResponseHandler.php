@@ -35,7 +35,7 @@ abstract class XmlResponseHandler implements ResponseHandlerInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     abstract public function handle();
 

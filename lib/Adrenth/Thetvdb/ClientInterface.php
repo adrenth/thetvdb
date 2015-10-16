@@ -11,7 +11,7 @@ use Adrenth\Thetvdb\Response\UserRatingResponse;
 use Adrenth\Thetvdb\Response\UserRatingsResponse;
 
 /**
- * Client Interface
+ * Class ClientInterface
  *
  * @category Thetvdb
  * @package  Adrenth\Thetvdb
