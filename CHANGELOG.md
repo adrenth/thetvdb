@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+* Small improvements to code style and php docblocks
+
 ## 0.1.3
 
 * Small improvements to code style and php docblocks
