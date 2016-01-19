@@ -258,6 +258,7 @@ class Series
      *
      * @param Episode[] $episodes
      * @return $this
+     * @throws InvalidArgumentException
      */
     public function setEpisodes($episodes)
     {
