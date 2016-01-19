@@ -41,15 +41,20 @@ class EpisodeResponseHandler extends XmlResponseHandler
     }
 
     /**
+     * Return Episode instance from array data
+     *
      * @param array $data
      * @return Episode
      */
-    private function getEpisodeFromArray(array $data)
+    public static function getEpisodeFromArray(array $data)
     {
         $episode = new Episode();
 
+        if (array_key_exists('id', $data)) {
+            $episode->setIdentifier($data['id']);
+        }
         if (array_key_exists('seriesid', $data)) {
-            $episode->setIdentifier($data['seriesid']);
+            $episode->setSeriesIdentifier($data['seriesid']);
         }
         if (array_key_exists('seasonid', $data)) {
             $episode->setSeasonIdentifier($data['seasonid']);
