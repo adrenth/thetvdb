@@ -86,7 +86,7 @@ class EpisodeResponseHandler extends XmlResponseHandler
         }
         if (array_key_exists('FirstAired', $data)) {
             $firstAired = strtotime($data['FirstAired']);
-            $firstAired = $firstAired !== false ? new \DateTime(date('Y-m-d', $firstAired)) : '';
+            $firstAired = $firstAired !== false ? new \DateTime(date('Y-m-d', $firstAired)) : null;
             $episode->setFirstAired($firstAired);
         }
         if (array_key_exists('GuestStars', $data)) {
