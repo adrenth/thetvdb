@@ -2,6 +2,8 @@
 
 namespace Adrenth\Thetvdb\Response;
 
+use Adrenth\Thetvdb\Series;
+
 /**
  * Class SeriesResponse
  *
@@ -13,11 +15,11 @@ namespace Adrenth\Thetvdb\Response;
  */
 class SeriesResponse
 {
-    /** @type array */
+    /** @type Series[] */
     private $series;
 
     /**
-     * @param array $series
+     * @param Series[] $series
      */
     public function __construct(array $series = [])
     {
@@ -27,7 +29,7 @@ class SeriesResponse
     /**
      * Get series
      *
-     * @return array
+     * @return Series[]
      */
     public function getSeries()
     {
