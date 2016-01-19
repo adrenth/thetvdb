@@ -46,7 +46,17 @@ class SeriesResponseHandler extends XmlResponseHandler
                 $series[] = $this->getSeriesFromArray($seriesData);
             }
         } else {
-            $series[] = $this->getSeriesFromArray($data['Series']);
+            $series = $this->getSeriesFromArray($data['Series']);
+            if (!empty($data['Episode'])) {
+                if (is_numeric(array_keys($data['Episode'])[0])) {
+                    foreach ($data['Episode'] as $episodeData) {
+                        $series->addEpisode(EpisodeResponseHandler::getEpisodeFromArray($episodeData));
+                    }
+                } else {
+                    $series->addEpisode(EpisodeResponseHandler::getEpisodeFromArray($data['Episode']));
+                }
+            }
+            $series = [$series];
         }
 
         return $series;
