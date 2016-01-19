@@ -2,6 +2,8 @@
 
 namespace Adrenth\Thetvdb;
 
+use Adrenth\Thetvdb\Exception\InvalidArgumentException;
+
 /**
  * Class Series
  *
@@ -26,6 +28,12 @@ class Series
     private $banner;
 
     /** @type string */
+    private $fanart;
+
+    /** @type string */
+    private $poster;
+
+    /** @type string */
     private $overview;
 
     /** @type \DateTime */
@@ -39,6 +47,9 @@ class Series
 
     /** @type string */
     private $zap2itId;
+
+    /** @type Episode[] */
+    private $episodes = [];
 
     /**
      * Get identifier
@@ -114,6 +125,16 @@ class Series
     public function getBanner()
     {
         return $this->banner;
+    }
+
+    /**
+     * Get full banner url
+     *
+     * @return string|null
+     */
+    public function getFullBannerUrl()
+    {
+        return strlen($this->banner) ? static::getBannersPath() . $this->banner : null;
     }
 
     /**
@@ -236,5 +257,118 @@ class Series
     {
         $this->zap2itId = $zap2itId;
         return $this;
+    }
+
+    /**
+     * Get Fanart uri
+     *
+     * @return string
+     */
+    public function getFanart()
+    {
+        return $this->fanart;
+    }
+
+    /**
+     * Get full poster url
+     *
+     * @return string
+     */
+    public function getFullFanartUrl()
+    {
+        return strlen($this->fanart) ? static::getBannersPath() . $this->fanart : null;
+    }
+
+    /**
+     * Set fanart uri
+     *
+     * @param string $fanart
+     * @return $this
+     */
+    public function setFanart($fanart)
+    {
+        $this->fanart = $fanart;
+        return $this;
+    }
+
+    /**
+     * Get poster uri
+     *
+     * @return string
+     */
+    public function getPoster()
+    {
+        return $this->poster;
+    }
+
+    /**
+     * Get full poster url
+     *
+     * @return string
+     */
+    public function getFullPosterUrl()
+    {
+        return strlen($this->poster) ? static::getBannersPath() . $this->poster : null;
+    }
+
+    /**
+     * Set poster uri
+     *
+     * @param string $poster
+     * @return $this
+     */
+    public function setPoster($poster)
+    {
+        $this->poster = $poster;
+        return $this;
+    }
+
+    /**
+     * Get episodes
+     *
+     * @return Episode[]
+     */
+    public function getEpisodes()
+    {
+        return $this->episodes;
+    }
+
+    /**
+     * Set array of episodes
+     *
+     * @param Episode[] $episodes
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function setEpisodes($episodes)
+    {
+        if (!($episodes instanceof \ArrayAccess)) {
+            throw new InvalidArgumentException('Episodes should be instance of ArrayAccess');
+        }
+
+        $this->episodes = $episodes;
+        return $this;
+    }
+
+    /**
+     * Add one episode to episodes array
+     *
+     * @param Episode $episode
+     * @return $this
+     */
+    public function addEpisode(Episode $episode)
+    {
+        $this->episodes[] = $episode;
+        return $this;
+    }
+
+    /**
+     * Get URI for full banner path
+     *
+     * @return string
+     */
+    private static function getBannersPath()
+    {
+        return Client::API_BASE_URI . '/banners/';
     }
 }

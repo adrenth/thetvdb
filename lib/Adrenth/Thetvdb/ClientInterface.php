@@ -2,6 +2,7 @@
 
 namespace Adrenth\Thetvdb;
 
+use Adrenth\Thetvdb\Exception\InvalidArgumentException;
 use Adrenth\Thetvdb\Exception\InvalidXmlInResponseException;
 use Adrenth\Thetvdb\Response\SeriesResponse;
 use Adrenth\Thetvdb\Response\ServerTimeResponse;
@@ -38,6 +39,16 @@ interface ClientInterface
      * @throws InvalidXmlInResponseException
      */
     public function getSeries($name, Language $language = null);
+
+    /**
+     * Get one Series by TheTVDB ID
+     *
+     * @param integer       $seriesId
+     * @param Language|null $language
+     * @return Response\SeriesResponse
+     * @throws InvalidXmlInResponseException|InvalidArgumentException
+     */
+    public function getSeriesById($seriesId, Language $language = null);
 
     /**
      * Get Series by IMDB ID

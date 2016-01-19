@@ -46,7 +46,17 @@ class SeriesResponseHandler extends XmlResponseHandler
                 $series[] = $this->getSeriesFromArray($seriesData);
             }
         } else {
-            $series[] = $this->getSeriesFromArray($data['Series']);
+            $series = $this->getSeriesFromArray($data['Series']);
+            if (!empty($data['Episode'])) {
+                if (is_numeric(array_keys($data['Episode'])[0])) {
+                    foreach ($data['Episode'] as $episodeData) {
+                        $series->addEpisode(EpisodeResponseHandler::getEpisodeFromArray($episodeData));
+                    }
+                } else {
+                    $series->addEpisode(EpisodeResponseHandler::getEpisodeFromArray($data['Episode']));
+                }
+            }
+            $series = [$series];
         }
 
         return $series;
@@ -62,10 +72,16 @@ class SeriesResponseHandler extends XmlResponseHandler
 
         if (array_key_exists('seriesid', $data)) {
             $series->setIdentifier($data['seriesid']);
+        } elseif (array_key_exists('SeriesID', $data)) {
+            $series->setIdentifier($data['SeriesID']);
+        } elseif (array_key_exists('id', $data)) {
+            $series->setIdentifier($data['id']);
         }
 
         if (array_key_exists('language', $data)) {
             $series->setLanguage(new Language($data['language']));
+        } elseif (array_key_exists('Language', $data)) {
+            $series->setLanguage(new Language($data['Language']));
         }
 
         if (array_key_exists('SeriesName', $data)) {
@@ -74,6 +90,14 @@ class SeriesResponseHandler extends XmlResponseHandler
 
         if (array_key_exists('banner', $data)) {
             $series->setBanner($data['banner']);
+        }
+
+        if (array_key_exists('fanart', $data)) {
+            $series->setFanart($data['fanart']);
+        }
+
+        if (array_key_exists('poster', $data)) {
+            $series->setPoster($data['poster']);
         }
 
         if (array_key_exists('Overview', $data)) {

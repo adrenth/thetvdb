@@ -37,19 +37,24 @@ class EpisodeResponseHandler extends XmlResponseHandler
             return new EpisodeResponse();
         }
 
-        return $this->getEpisodeFromArray($data['Episode']);
+        return static::getEpisodeFromArray($data['Episode']);
     }
 
     /**
+     * Return Episode instance from array data
+     *
      * @param array $data
      * @return Episode
      */
-    private function getEpisodeFromArray(array $data)
+    public static function getEpisodeFromArray(array $data)
     {
         $episode = new Episode();
 
+        if (array_key_exists('id', $data)) {
+            $episode->setIdentifier($data['id']);
+        }
         if (array_key_exists('seriesid', $data)) {
-            $episode->setIdentifier($data['seriesid']);
+            $episode->setSeriesIdentifier($data['seriesid']);
         }
         if (array_key_exists('seasonid', $data)) {
             $episode->setSeasonIdentifier($data['seasonid']);
@@ -86,7 +91,7 @@ class EpisodeResponseHandler extends XmlResponseHandler
         }
         if (array_key_exists('FirstAired', $data)) {
             $firstAired = strtotime($data['FirstAired']);
-            $firstAired = $firstAired !== false ? new \DateTime(date('Y-m-d', $firstAired)) : '';
+            $firstAired = $firstAired !== false ? new \DateTime(date('Y-m-d', $firstAired)) : null;
             $episode->setFirstAired($firstAired);
         }
         if (array_key_exists('GuestStars', $data)) {
