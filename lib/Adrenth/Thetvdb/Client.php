@@ -143,11 +143,11 @@ class Client implements ClientInterface
      *
      * @throws \RuntimeException
      */
-    public function getSeriesById($id, Language $language = null)
+    public function getSeriesById($seriesId, Language $language = null)
     {
         $query = [
-            'apikey'   => $this->apiKey,
-            'seriesId' => $id
+            'apikey' => $this->apiKey,
+            'seriesId' => $seriesId,
         ];
 
         if ($language !== null) {

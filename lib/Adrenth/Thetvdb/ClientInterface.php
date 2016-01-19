@@ -43,12 +43,12 @@ interface ClientInterface
     /**
      * Get one Series by TheTVDB ID
      *
-     * @param integer       $id
+     * @param integer       $seriesId
      * @param Language|null $language
      * @return Response\SeriesResponse
      * @throws InvalidXmlInResponseException|InvalidArgumentException
      */
-    public function getSeriesById($id, Language $language = null);
+    public function getSeriesById($seriesId, Language $language = null);
 
     /**
      * Get Series by IMDB ID
