@@ -16,6 +16,9 @@ class Episode
     /** @type int */
     private $identifier;
 
+    /** @type int  */
+    private $seriesIdentifier;
+
     /** @type int */
     private $seasonIdentifier;
 
@@ -580,6 +583,16 @@ class Episode
     }
 
     /**
+     * Get full filename
+     *
+     * @return string|null
+     */
+    public function getFullFilename()
+    {
+        return strlen($this->filename) ? static::getBannersPath() . $this->filename : null;
+    }
+
+    /**
      * Set filename
      *
      * @param string $filename
@@ -611,5 +624,37 @@ class Episode
     {
         $this->lastUpdated = $lastUpdated;
         return $this;
+    }
+
+    /**
+     * Get series id
+     *
+     * @return int
+     */
+    public function getSeriesIdentifier()
+    {
+        return $this->seriesIdentifier;
+    }
+
+    /**
+     * Set series id
+     *
+     * @param int $seriesIdentifier
+     * @return $this
+     */
+    public function setSeriesIdentifier($seriesIdentifier)
+    {
+        $this->seriesIdentifier = $seriesIdentifier;
+        return $this;
+    }
+
+    /**
+     * Get uri for full banner path
+     *
+     * @return string
+     */
+    private static function getBannersPath()
+    {
+        return Client::API_BASE_URI . '/banners/';
     }
 }

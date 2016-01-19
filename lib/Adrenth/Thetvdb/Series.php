@@ -2,6 +2,8 @@
 
 namespace Adrenth\Thetvdb;
 
+use Adrenth\Thetvdb\Exception\InvalidArgumentException;
+
 /**
  * Class Series
  *
@@ -45,6 +47,9 @@ class Series
 
     /** @type string */
     private $zap2itId;
+
+    /** @type Episode[] */
+    private $episodes = [];
 
     /**
      * Get identifier
@@ -319,7 +324,46 @@ class Series
     }
 
     /**
-     * Get uri for full banner path
+     * Get episodes
+     *
+     * @return Episode[]
+     */
+    public function getEpisodes()
+    {
+        return $this->episodes;
+    }
+
+    /**
+     * Set array of episodes
+     *
+     * @param Episode[] $episodes
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function setEpisodes($episodes)
+    {
+        if (!($episodes instanceof \ArrayAccess)) {
+            throw new InvalidArgumentException('Episodes should be instance of ArrayAccess');
+        }
+
+        $this->episodes = $episodes;
+        return $this;
+    }
+
+    /**
+     * Add one episode to episodes array
+     *
+     * @param Episode $episode
+     * @return $this
+     */
+    public function addEpisode(Episode $episode)
+    {
+        $this->episodes[] = $episode;
+        return $this;
+    }
+
+    /**
+     * Get URI for full banner path
      *
      * @return string
      */
