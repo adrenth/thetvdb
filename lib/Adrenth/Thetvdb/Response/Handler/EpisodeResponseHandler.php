@@ -37,7 +37,7 @@ class EpisodeResponseHandler extends XmlResponseHandler
             return new EpisodeResponse();
         }
 
-        return $this->getEpisodeFromArray($data['Episode']);
+        return static::getEpisodeFromArray($data['Episode']);
     }
 
     /**
