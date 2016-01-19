@@ -2,6 +2,7 @@
 
 namespace Adrenth\Thetvdb;
 
+use Adrenth\Thetvdb\Exception\InvalidArgumentException;
 use Adrenth\Thetvdb\Response\Handler\EpisodeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\SeriesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
@@ -30,6 +31,7 @@ class Client implements ClientInterface
     const API_PATH_USER_RATING = '/api/User_Rating.php';
     const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
     const API_PATH_SERIES = '/api/GetSeries.php';
+    const API_PATH_SERIES_BY_ID = '/api/#apikey#/series/#seriesId#/all/#language#.xml';
     const API_PATH_SERIES_BY_REMOTE_ID = '/api/GetSeriesByRemoteID.php';
     const API_PATH_EPISODE = '/api/GetEpisodeByAirDate.php';
 
@@ -61,6 +63,13 @@ class Client implements ClientInterface
      * @type string
      */
     private $apiKey;
+
+    /**
+     * Default language code, used when another not set
+     *
+     * @type string
+     */
+    private $defaultLanguageCode = 'en';
 
     /**
      * Construct
@@ -124,6 +133,35 @@ class Client implements ClientInterface
         $xml = $this->performApiCallWithCachedXmlResponse(static::API_PATH_SERIES, [
             'query' => $query
         ]);
+
+        $handler = new SeriesResponseHandler($xml);
+        return $handler->handle();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
+    public function getSeriesById($id, Language $language = null)
+    {
+        $query = [
+            'apikey'   => $this->apiKey,
+            'seriesId' => $id
+        ];
+
+        if ($language !== null) {
+            $query['language'] = $language->getCode();
+        } else {
+            $query['language'] = $this->defaultLanguageCode;
+        }
+
+        $path = static::generateApiPath(static::API_PATH_SERIES_BY_ID, $query);
+
+        $xml = $this->performApiCallWithCachedXmlResponse(
+            $path,
+            ['query' => $query]
+        );
 
         $handler = new SeriesResponseHandler($xml);
         return $handler->handle();
@@ -448,5 +486,36 @@ class Client implements ClientInterface
                 $path
             )
         );
+    }
+
+    /**
+     * Generate path from path-template and options
+     *
+     * @param string $pathTemplate
+     * @param array $options
+     * @return string
+     * @throws InvalidArgumentException
+     */
+    protected static function generateApiPath($pathTemplate, array $options)
+    {
+        $path = $pathTemplate;
+        foreach ($options as $key => $value) {
+            $path = str_replace(sprintf('#%s#', $key), $value, $path);
+        }
+
+        if (strpos($path, '#') !== false) {
+            preg_match_all('/#(.*?)#/', $path, $notFoundOptions);
+
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Not found %d options "%s" to fill the path "%s"',
+                    count($notFoundOptions[1]),
+                    implode(', ', $notFoundOptions[1]),
+                    $path
+                )
+            );
+        }
+
+        return $path;
     }
 }
