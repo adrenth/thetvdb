@@ -1,16 +1,19 @@
 <?php
 
-/**
- * @author Stanislav Vetlovskiy
- * @date   08.01.2016
- */
-
 namespace Adrenth\Tests\Thetvdb\Client;
 
 use ReflectionClass;
 
+/**
+ * Class ClientTest
+ * @author Stanislav Vetlovskiy
+ * @package Adrenth\Tests\Thetvdb\Client
+ */
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return array
+     */
     public function apiPathDataProvider()
     {
         return [
@@ -67,7 +70,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     public function testGenerateApiPath($path, array $options, $expected)
     {
         $method = self::getMethod('generateApiPath');
-        $this->assertEquals($expected, $method->invokeArgs(null, [$path, $options]));
+        self::assertEquals($expected, $method->invokeArgs(null, [$path, $options]));
     }
 
     /**
@@ -80,10 +83,16 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $method->invokeArgs(null, ['#key#/#additional#', ['key' => '1234']]);
     }
 
-    protected static function getMethod($name) {
+    /**
+     * @param $name
+     * @return \ReflectionMethod
+     */
+    protected static function getMethod($name)
+    {
         $class = new ReflectionClass('\Adrenth\Thetvdb\Client');
         $method = $class->getMethod($name);
         $method->setAccessible(true);
+
         return $method;
     }
 }

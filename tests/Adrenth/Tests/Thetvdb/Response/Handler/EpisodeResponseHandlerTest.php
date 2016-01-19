@@ -1,13 +1,15 @@
 <?php
-/**
- * @author Stanislav Vetlovskiy
- * @date   13.01.2016
- */
 
 namespace Adrenth\Tests\Thetvdb\Response\Handler;
 
 use Adrenth\Thetvdb\Response\Handler\EpisodeResponseHandler;
 
+/**
+ * Class EpisodeResponseHandlerTest
+ *
+ * @author Stanislav Vetlovskiy
+ * @package Adrenth\Tests\Thetvdb\Response\Handler
+ */
 class EpisodeResponseHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -18,7 +20,7 @@ class EpisodeResponseHandlerTest extends \PHPUnit_Framework_TestCase
     public function testGetEpisodeFromArray(array $data)
     {
         $episode = EpisodeResponseHandler::getEpisodeFromArray($data);
-        $this->assertInstanceOf('Adrenth\\Thetvdb\\Episode', $episode);
+        self::assertInstanceOf('Adrenth\\Thetvdb\\Episode', $episode);
     }
 
     /**
@@ -41,8 +43,7 @@ class EpisodeResponseHandlerTest extends \PHPUnit_Framework_TestCase
                 'EpImgFlag' => '2',
                 'EpisodeName' => 'Youchien 1',
                 'EpisodeNumber' => '1',
-                // todo: uncomment when merge #4 PR
-                //'FirstAired' => '',
+                'FirstAired' => '',
                 'GuestStars' => '',
                 'IMDB_ID' => '',
                 'Language' => 'en',
@@ -97,5 +98,5 @@ class EpisodeResponseHandlerTest extends \PHPUnit_Framework_TestCase
             ]]
         ];
     }
-
 }
+
