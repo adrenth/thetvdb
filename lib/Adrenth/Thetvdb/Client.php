@@ -441,8 +441,7 @@ class Client implements ClientInterface
         $response = $this->httpClient->get($path, $options);
 
         if ($response->getStatusCode() === 200) {
-            $xml = $response->getBody()->getContents();
-            return $xml;
+            return $response->getBody()->getContents();
         }
 
         throw new \RuntimeException(
