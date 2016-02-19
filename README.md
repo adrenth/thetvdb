@@ -105,5 +105,5 @@ For more information about Doctrine Cache visit [https://github.com/doctrine/cac
 
 ## Contributing
 
-Please contribute to make this package even better.
+Please contribute to make this package even better. I've started making this package compatible with TheTVDB.com API 2.0. Any contributions to the `2.0` branch are very welcome.
 
