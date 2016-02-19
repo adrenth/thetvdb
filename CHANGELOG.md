@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.7
+
+* Added functionality for fetching Series banners
+
+## 0.1.6
+
+* Added some contributions and improvements to code
+* Added `getSeriesById` method to `Client`
+
+## 0.1.5
+
+* Updated dependencies
+
 ## 0.1.4
 
 * Small improvements to code style and php docblocks
