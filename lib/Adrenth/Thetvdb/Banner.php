@@ -68,7 +68,6 @@ class Banner
 
     /**
      * @param int $identifier
-     *
      * @return $this
      */
     public function setIdentifier($identifier)
@@ -88,7 +87,6 @@ class Banner
 
     /**
      * @param string $bannerPath
-     *
      * @return $this
      */
     public function setBannerPath($bannerPath)
@@ -108,7 +106,6 @@ class Banner
 
     /**
      * @param string $bannerType
-     *
      * @return $this
      */
     public function setBannerType($bannerType)
@@ -128,7 +125,6 @@ class Banner
 
     /**
      * @param string $bannerType2
-     *
      * @return $this
      */
     public function setBannerType2($bannerType2)
@@ -147,14 +143,14 @@ class Banner
     }
 
     /**
-     * @param array[] $colors
-     *
+     * @param string $colors
      * @return $this
      */
     public function setColors($colors)
     {
         $newColors = [];
-        if (strlen($colors)) {
+
+        if ($colors !== '') {
             foreach (explode('|', $colors) as $color) {
                 $newColors[] = explode(',', $color);
             }
@@ -174,7 +170,6 @@ class Banner
 
     /**
      * @param string $language
-     *
      * @return $this
      */
     public function setLanguage($language)
@@ -194,7 +189,6 @@ class Banner
 
     /**
      * @param float $rating
-     *
      * @return $this
      */
     public function setRating($rating)
@@ -214,7 +208,6 @@ class Banner
 
     /**
      * @param int $ratingCount
-     *
      * @return $this
      */
     public function setRatingCount($ratingCount)
@@ -234,7 +227,6 @@ class Banner
 
     /**
      * @param string $seriesName
-     *
      * @return $this
      */
     public function setSeriesName($seriesName)
@@ -254,7 +246,6 @@ class Banner
 
     /**
      * @param int $season
-     *
      * @return $this
      */
     public function setSeason($season)
@@ -274,7 +265,6 @@ class Banner
 
     /**
      * @param string $thumbnailPath
-     *
      * @return $this
      */
     public function setThumbnailPath($thumbnailPath)
@@ -294,7 +284,6 @@ class Banner
 
     /**
      * @param string $vignettePath
-     *
      * @return $this
      */
     public function setVignettePath($vignettePath)
