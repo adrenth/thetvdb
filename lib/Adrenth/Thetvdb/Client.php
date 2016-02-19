@@ -3,6 +3,7 @@
 namespace Adrenth\Thetvdb;
 
 use Adrenth\Thetvdb\Exception\InvalidArgumentException;
+use Adrenth\Thetvdb\Response\Handler\BannersResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\EpisodeResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\SeriesResponseHandler;
 use Adrenth\Thetvdb\Response\Handler\ServerTimeResponseHandler;
@@ -32,6 +33,7 @@ class Client implements ClientInterface
     const API_PATH_USER_RATINGS = '/api/GetRatingsForUser.php';
     const API_PATH_SERIES = '/api/GetSeries.php';
     const API_PATH_SERIES_BY_ID = '/api/#apikey#/series/#seriesId#/all/#language#.xml';
+    const API_PATH_SERIES_BANNERS = '/api/#apikey#/series/#seriesId#/banners.xml';
     const API_PATH_SERIES_BY_REMOTE_ID = '/api/GetSeriesByRemoteID.php';
     const API_PATH_EPISODE = '/api/GetEpisodeByAirDate.php';
 
@@ -166,6 +168,30 @@ class Client implements ClientInterface
         $handler = new SeriesResponseHandler($xml);
         return $handler->handle();
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \RuntimeException
+     */
+    public function getSeriesBanners($seriesId)
+    {
+        $query = [
+            'apikey' => $this->apiKey,
+            'seriesId' => $seriesId,
+        ];
+
+        $path = static::generateApiPath(static::API_PATH_SERIES_BANNERS, $query);
+
+        $xml = $this->performApiCallWithCachedXmlResponse(
+            $path,
+            ['query' => $query]
+        );
+
+        $handler = new BannersResponseHandler($xml);
+        return $handler->handle();
+    }
+
 
     /**
      * {@inheritdoc}
@@ -441,8 +467,7 @@ class Client implements ClientInterface
         $response = $this->httpClient->get($path, $options);
 
         if ($response->getStatusCode() === 200) {
-            $xml = $response->getBody()->getContents();
-            return $xml;
+            return $response->getBody()->getContents();
         }
 
         throw new \RuntimeException(

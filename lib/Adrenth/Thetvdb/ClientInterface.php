@@ -51,6 +51,15 @@ interface ClientInterface
     public function getSeriesById($seriesId, Language $language = null);
 
     /**
+     * Get series banners by TheTVDB ID
+     *
+     * @param integer       $seriesId
+     * @return Response\BannersResponse
+     * @throws InvalidXmlInResponseException|InvalidArgumentException
+     */
+    public function getSeriesBanners($seriesId);
+
+    /**
      * Get Series by IMDB ID
      *
      * @param string        $imdbId
