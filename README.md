@@ -22,6 +22,10 @@ Please follow these guidelines:
 
 *Source: thetvdb.com*
 
+## API v2
+
+There is also a version 2 of the API for which I also created a PHP client. See [https://github.com/adrenth/thetvdb2]().
+
 ## Installation
 
 Install this package using composer:
@@ -105,5 +109,4 @@ For more information about Doctrine Cache visit [https://github.com/doctrine/cac
 
 ## Contributing
 
-Please contribute to make this package even better. I've started making this package compatible with TheTVDB.com API 2.0. Any contributions to the `2.0` branch are very welcome.
-
+Please contribute to make this package even better.
