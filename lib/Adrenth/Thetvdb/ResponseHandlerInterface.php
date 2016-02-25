@@ -2,8 +2,6 @@
 
 namespace Adrenth\Thetvdb;
 
-use Adrenth\Thetvdb\Response;
-
 /**
  * Class ResponseHandlerInterface
  *
